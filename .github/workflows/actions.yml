@@ -11,6 +11,7 @@ jobs:
       - run: pip3 install cocotb cocotb-bus cocotb-coverage
       - run: make -C tests && mv tests/results.xml tests/orig.xml
       - run: cp hdl/delayed_dut.v hdl/dut.v && make -C tests && mv tests/results.xml tests/delayed_dut.xml
+      - run: ls -l tests/ 
       - uses: actions/upload-artifact@v4
         with:
           name: waveform
