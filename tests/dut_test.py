@@ -174,10 +174,15 @@ async def dut_test(dut):
             await tbh.reader._driver_send({'addr': x.get('read_address')})
             print(f"[{i}] Read addr {x.get('read_address')} -> {dut.read_data.value.integer}")
             tbh.stat_dec(x.get('read_address'), dut.read_data.value.integer)
+
+	    fl_cv(None,0,None,1,x.get('read_address'))
+
         elif x.get("write_en") == 1:
             await tbh.writer._driver_send({'addr': x.get('write_address'), 'val': x.get('write_data')})
             print(f"[{i}] Write addr {x.get('write_address')} <- {x.get('write_data')}")
             tbh.stat_dec(x.get('write_address'), x.get('write_data'))
+
+	    fl_cv(x.get('write_address'),1,x.get('write_data'),0,None)
 
         await RisingEdge(dut.CLK)
 
