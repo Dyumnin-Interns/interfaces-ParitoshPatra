@@ -146,16 +146,17 @@ class TestBench:
 
 
 
+
+
 @cocotb.test()
 async def dut_test(dut):
     cocotb.start_soon(Clock(dut.CLK, 2, "ns").start())
 
     log = SimLog("interface_test")
     logging.getLogger().setLevel(logging.INFO)
-    
+
     tbh = TestBench(name="tb inst", entity=dut)
     await tbh.reset_dut()
-
 
     test_vectors = [(0, 0), (0, 1), (1, 0), (1, 1)]
     for a, b in test_vectors:
@@ -175,16 +176,14 @@ async def dut_test(dut):
             print(f"[{i}] Read addr {x.get('read_address')} -> {dut.read_data.value.integer}")
             tbh.stat_dec(x.get('read_address'), dut.read_data.value.integer)
 
-		fl_cv(None,0,None,1,x.get('read_address'))
-
+            fl_cv(None, 0, None, 1, x.get('read_address'))
 
         elif x.get("write_en") == 1:
             await tbh.writer._driver_send({'addr': x.get('write_address'), 'val': x.get('write_data')})
             print(f"[{i}] Write addr {x.get('write_address')} <- {x.get('write_data')}")
             tbh.stat_dec(x.get('write_address'), x.get('write_data'))
 
-		fl_cv(x.get('write_address'),1,x.get('write_data'),0,None)
-
+            fl_cv(x.get('write_address'), 1, x.get('write_data'), 0, None)
 
         await RisingEdge(dut.CLK)
 
@@ -195,8 +194,6 @@ async def dut_test(dut):
     print(f"Functional Coverage (A×B): {coverage_db['top.cross.ab'].cover_percentage:.2f}%")
     print(f"Write Coverage: {coverage_db['top.cross.w'].cover_percentage:.2f}%")
     print(f"Read Coverage: {coverage_db['top.cross.r'].cover_percentage:.2f}%")
-
-
 
 
 
